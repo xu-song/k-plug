@@ -187,7 +187,7 @@ class KnowledgeLanguagePairDataset(LanguagePairDataset):
         example = {
             'id': index,
             'source': source,
-            'cls_target': torch.LongTensor([self.cls_pad]),
+            'cls_target': self._create_dummy_data('cls'),
             'mlm_target': torch.from_numpy(np.full(len(source), self.src_dict.pad())),
             'clm_target': torch.from_numpy(np.full(1, self.src_dict.pad())),
             'tag_target': tag_target,
@@ -226,6 +226,7 @@ class KnowledgeLanguagePairDataset(LanguagePairDataset):
         prev_output_tokens = source[prev_output_positions - 1].clone()
         prev_output_positions = torch.LongTensor(prev_output_positions)
 
+        # if True:
         if self.debug_size_for_titlegen < 2:
             logger.info('========= index: {} == title generation ======='.format(str(index)))
             logger.info('src_raw: ' + ''.join([self.src_dict[ii] for ii in src_item]))
@@ -233,6 +234,7 @@ class KnowledgeLanguagePairDataset(LanguagePairDataset):
 
         source[masked_pos] = self.replace(source[masked_pos])
 
+        # if True:
         if self.debug_size_for_titlegen < 2:
             self.debug_size_for_titlegen += 1
             logger.info('src_mask: ' + ''.join([self.src_dict[ii] for ii in source]))
@@ -295,6 +297,7 @@ class KnowledgeLanguagePairDataset(LanguagePairDataset):
         src_label = torch.LongTensor([int(self.meta_dict[src_label])]) \
             if src_label >= self.meta_dict.nspecial else self._create_dummy_data('cls')
 
+        # entity mask
         src_entity = np.array([int(self.meta_dict[k]) for k in src_entity])
         assert len(src_entity) % 2 == 0
         src_entity = np.array(src_entity.reshape(-1, 2)) + 1  # offset for [CLS]
@@ -313,6 +316,7 @@ class KnowledgeLanguagePairDataset(LanguagePairDataset):
         # build data for CLM in Decoder
         prev_output_positions, prev_output_tokens, clm_target = self._create_dummy_data('clm')
 
+        # if True:
         if self.debug_size_for_mlm < 2:
             logger.info('========= index: {} ==== MLM mask ====='.format(str(index)))
             logger.info('src: ' + ''.join([self.src_dict[ii] for ii in src_item]))
@@ -322,15 +326,13 @@ class KnowledgeLanguagePairDataset(LanguagePairDataset):
 
         src_item[masked_pos] = self.replace(src_item[masked_pos])
 
+        # if True:
         if self.debug_size_for_mlm < 2:
             self.debug_size_for_mlm += 1
             logger.info('src_mask: ' + ''.join([self.src_dict[ii] for ii in src_item]))
             logger.info('mlm_pos: ' + ' '.join([str(v) for v in mlm_position_list]))
             logger.info(
                 'mlm_target:' + ''.join([self.src_dict[ii] for ii in mlm_target if ii != self.src_dict.pad_index]))
-
-        if prev_output_tokens.numel() == 0:
-            prev_output_positions, prev_output_tokens, clm_target = self._create_dummy_data('clm')
 
         example = {
             'id': index,
@@ -352,7 +354,6 @@ class KnowledgeLanguagePairDataset(LanguagePairDataset):
         assert len(src_meta) % 2 == 1
         src_label, src_entity = torch.LongTensor(src_meta[:1]), src_meta[1:]
         src_entity = np.array(src_entity.reshape(-1, 2)) + 1
-        src_label = torch.LongTensor(np.array([None]))
 
         # build data for CLM in Decoder
         clm_position_list = np.array(apply_span_mask(src_sz-1) + 1)  # start at 1
@@ -417,7 +418,7 @@ class KnowledgeLanguagePairDataset(LanguagePairDataset):
         src_label, src_entity = torch.LongTensor(src_meta[:1]), src_meta[1:]
         src_entity = np.array(src_entity.reshape(-1, 2)) + 1  # offset for [CLS]
         if 'sentcls' not in self.sub_task:
-            src_label = torch.LongTensor([self.cls_pad])
+            src_label = self._create_dummy_data('cls')
 
         mlm_position_list, clm_position_list = [], []
         if 'clm' in self.sub_task:

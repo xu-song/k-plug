@@ -1,7 +1,7 @@
 """
 TODO: load_from_file -> load
 
-加入到 https://github.com/pytorch/fairseq/blob/master/fairseq/data/legacy/masked_lm_dictionary.py
+add to https://github.com/pytorch/fairseq/blob/master/fairseq/data/legacy/masked_lm_dictionary.py
 """
 
 from fairseq.data import Dictionary

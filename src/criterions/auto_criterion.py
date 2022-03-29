@@ -129,7 +129,7 @@ class AutoCriterion(FairseqCriterion):
             loss += mlm_loss
         if sample_sizes.get('clm', 0) > 0:
             clm_loss = self._compute_clm_loss(model, net_output, sample, masked_tokens['clm'])
-            loss += clm_loss
+            # loss += clm_loss
         if sample_sizes.get('cls', 0) > 0:
             cls_loss, ncorrect_cls = self._compute_cls_loss(model, net_output, sample, masked_tokens['cls'])
             loss += cls_loss
@@ -294,3 +294,9 @@ class AutoCriterion(FairseqCriterion):
         to True will improves distributed training speed.
         """
         return True
+
+
+
+@register_criterion('multitask_lm')
+class MultiTaskLMCriterion(AutoCriterion):
+    pass

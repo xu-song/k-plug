@@ -21,7 +21,7 @@ from fairseq.models.transformer import (
     TransformerEncoder,
 )
 from fairseq.modules.transformer_sentence_encoder import init_bert_params
-from .transformer_mass import mass_base, mass_tiny, TransformerMASSModel
+from .transformer_mass import mass_base, mass_tiny, mass_big, TransformerMASSModel
 from .transformer_hub_interface import TransformerHubInterface
 from ..modules.output_heads import SentenceClassificationHead, MaskedLMHead, SequenceTaggingHead
 
@@ -58,13 +58,16 @@ class TransformerKplugModel(TransformerMASSModel):
                 'checkpoint_file': 'checkpoint72.20.pt',
             }
 
-        def sum_config(path):
+        def sum_jiadian_config(path):
             return {
                 'path': path,
                 'tokenizer': None,
                 'bpe': 'bert',
-                'bpe_vocab_file': os.path.join(path, 'dict.txt'),
-                'checkpoint_file': 'checkpoint72.50.pt',
+                'bpe_vocab_file': os.path.join(path, 'dict.txt'), # hf 词典格式要单列
+                'no_repeat_ngram_size': 3,
+                'min_len': 50,
+                'checkpoint_file': 'kplug_ft_jdsum_jiadian.pt',
+                "task": "translation_bertdict",
             }
 
         def sum_as_lm_config(path):
@@ -115,12 +118,12 @@ class TransformerKplugModel(TransformerMASSModel):
 
         HOME_PATH = os.path.dirname(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
         return {
-            'transformer.pretrain': pretrain_config(HOME_PATH + '/models/pretrain/'),
-            'transformer.pretrain.lm': pretrain_lm_config(HOME_PATH + '/models/pretrain/'),
-            'transformer.ft.sum.lm': sum_as_lm_config(HOME_PATH + '/models/finetune/sum/'),
-            'transformer.ft.sum': sum_config(HOME_PATH + '/models/finetune/sum/'),
-            'transformer.ft.tag': ner_config(HOME_PATH + '/models/finetune/ner_new/'),
-            'transformer.ft.cls': cls_config(HOME_PATH + '/models/finetune/cls/'),
+            'transformer.pretrain': pretrain_config(HOME_PATH + '/models/fairseq/kplug/'),
+            'kplug.pretrain.lm': pretrain_lm_config(HOME_PATH + '/models/fairseq/kplug/'),
+            'transformer.ft.sum.lm': sum_as_lm_config(HOME_PATH + '/models/fairseq/kplug-finetune/sum/'),
+            'transformer.ft.sum.jiadian': sum_jiadian_config(HOME_PATH + '/models/fairseq/kplug-finetune/jdsum/'),
+            'transformer.ft.tag': ner_config(HOME_PATH + '/models/fairseq/kplug-finetune/ner_new/'),
+            'transformer.ft.cls': cls_config(HOME_PATH + '/models/fairseq/kplug-finetune/cls/'),
         }
 
     @staticmethod
@@ -296,23 +299,28 @@ class TransformerKplugModel(TransformerMASSModel):
         decoder_out = None
         extra = {}
         if prev_output_tokens is not None and not prev_output_tokens.eq(self.decoder.padding_idx).all():
-            if masked_tokens.get('decoder_mask', None) is not None:
-                encoder_out = self.slice_encoder_out(encoder_out, masked_tokens['decoder_mask'])
+            if masked_tokens is not None:
+                if (isinstance(masked_tokens, dict) and masked_tokens.get('decoder_mask', None) is not None):
+                    encoder_out = self.slice_encoder_out(encoder_out, masked_tokens['decoder_mask'])
+
             decoder_out, extra = self.decoder(prev_output_tokens, encoder_out=encoder_out,
                                               prev_output_positions=prev_output_positions)
             if torch.isnan(decoder_out).any():
                 print('catch decoder nan')
 
-        if masked_tokens:
-            if masked_tokens.get('clm', None) is not None:
-                extra['clm_out'] = self.get_clm_output(decoder_out, masked_tokens['clm'])
-            if masked_tokens.get('mlm', None) is not None:
-                extra['mlm_out'] = self.get_mlm_output(encoder_feature, masked_tokens['mlm'])
-            if masked_tokens.get('cls', None) is not None:
-                extra['cls_out'] = self.get_cls_output(encoder_feature, masked_tokens['cls'],
-                                                       classification_head_name)  # masked_tokens['cls']是干嘛的？
-            if masked_tokens.get('tag', None) is not None:
-                extra['tag_out'] = self.get_tag_loss(encoder_feature, masked_tokens['tag'], tagging_head_name, tags)
+        if masked_tokens is not None:
+            if isinstance(masked_tokens, dict):
+                if masked_tokens.get('clm', None) is not None:
+                    extra['clm_out'] = self.get_clm_output(decoder_out, masked_tokens['clm'])
+                if masked_tokens.get('mlm', None) is not None:
+                    extra['mlm_out'] = self.get_mlm_output(encoder_feature, masked_tokens['mlm'])
+                if masked_tokens.get('cls', None) is not None:
+                    extra['cls_out'] = self.get_cls_output(encoder_feature, masked_tokens['cls'],
+                                                           classification_head_name)  # masked_tokens['cls']是干嘛的？
+                if masked_tokens.get('tag', None) is not None:
+                    extra['tag_out'] = self.get_tag_loss(encoder_feature, masked_tokens['tag'], tagging_head_name, tags)
+            elif isinstance(masked_tokens, torch.Tensor):
+                decoder_out = self.get_clm_output(decoder_out, masked_tokens)
 
         return decoder_out, extra
 
@@ -544,6 +552,14 @@ def transformer_tiny(args):
     args.pooler_activation_fn = getattr(args, 'pooler_activation_fn', 'tanh')
     args.pooler_dropout = getattr(args, 'pooler_dropout', 0.0)
     mass_tiny(args)
+
+@register_model_architecture('transformer_kplug', 'transformer_kplug_big')
+def transformer_tiny(args):
+    args.share_encoder_input_output_embed = getattr(args, 'share_encoder_input_output_embed', True)
+    args.pooler_activation_fn = getattr(args, 'pooler_activation_fn', 'tanh')
+    args.pooler_dropout = getattr(args, 'pooler_dropout', 0.0)
+    mass_big(args)
+
 
 
 @register_model_architecture('transformer_kplug_tagging', 'transformer_kplug_tagging_base')

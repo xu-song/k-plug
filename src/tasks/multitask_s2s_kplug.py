@@ -47,8 +47,8 @@ class MultitaskLMTask(MaskedS2STask):
         """Add task-specific arguments to the parser."""
         # fmt: off
         MaskedS2STask.add_args(parser)
-        parser.add_argument('--classification-head-name', type=str, default=None,
-                            help='')
+        # parser.add_argument('--classification-head-name', type=str, default=None,
+        #                     help='')  # has defined in criterion
         parser.add_argument('--num-classes', type=int, default=-1,
                             help='number of classes or regression targets')
         parser.add_argument('--tagging-head-name', type=str, default=None,

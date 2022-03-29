@@ -1,25 +1,52 @@
-# Fine-tuning KPLUG on AVE task
+Fine-tuning KPLUG on AVE dataset
+====
 
-Download the AVE data and preprocess it into data files with non-tokenized cased samples.
+## Introduction
+
+This is a task of sequence tagging on AVE dataset.
+
+Get full AVE dataset from https://github.com/jd-aig/JAVE.
+And preprocess it into data files with non-tokenized cased samples.
+
+
+
+### data sample
+
+
+after BPE
+```py
+# train.bpe
+不 用 确 认 了 ， 这 款 时     髦     复     古     的 个     性    原 创 夹       克       即 将 占 据 你 衣 橱 里 的 c 位 。
+
+# train.tag
+O  O  O  O  O  O  O  O  B-风格 I-风格 B-风格 I-风格 O  B-风格 I-风格 O O  B-产品词 I-产品词 O  O  O  O  O  O  O  O  O  O O O  
+```
+
+
+## Finetune Pipeline
 
 ### 1) BPE preprocess:
 
+```
+cd data_sample/ave/
+python data_process.py
+```
 
 ### 2) Binarize dataset:
 
+you can binarize dataset by the following script or download binarized dataset from [](aa)
+
 ```
-DATA_DIR=/workspace/fairseq-models/data
-# Binarized data 
 fairseq-preprocess \
-  --user-dir /workspace/fairseq/src \
+  --user-dir src \
   --task sequence_tagging \
   --source-lang src \
   --target-lang tag \
-  --srcdict ${DATA_DIR}/vocab/vocab.txt \
-  --trainpref ${DATA_DIR}/kb_ner/bpe/train  \
-  --validpref ${DATA_DIR}/kb_ner/bpe/valid \
-  --testpref ${DATA_DIR}/kb_ner/bpe/test \
-  --destdir ${DATA_DIR}/kb_ner/bin  \
+  --srcdict data/vocab/vocab.jd.txt \
+  --trainpref data/ave/bpe/train  \
+  --validpref data/ave/bpe/valid \
+  --testpref data/ave/bpe/test \
+  --destdir data/ave/bin  \
   --workers 20
 ```
 
@@ -29,11 +56,13 @@ fairseq-preprocess \
 Example fine-tuning 
 ```
 export CUDA_VISIBLE_DEVICES=0,1,2,3
+#DATA_DIR=data
+DATA_DIR=data_sample
+DATA_BIN_DIR=${DATA_DIR}/ave/bin
+RESTORE_MODEL=models/fairseq/kplug/kplug.pt
+HEAD=ave_tagging_head
 
-RESTORE_MODEL=models/transformer_pretrain/checkpoint.pt
-HEAD=jd_tagging_head
-
-fairseq-train data/JD/kb_ner/bin \
+fairseq-train $DATA_BIN_DIR \
     --user-dir src \
     --task sequence_tagging \
     --arch transformer_kplug_tagging_base \
@@ -52,47 +81,37 @@ fairseq-train data/JD/kb_ner/bin \
     --fp16
 ```
 
+if you need additional crf layer before prediction, just set `HEAD=crf_ave_tagging_head`
 
 
 ### 4) Inference for MEPAVE test data using above trained checkpoint.
 
 ```
-cd fairseq_cli_ext/
-
 export CUDA_VISIBLE_DEVICES=2
-DATA_DIR=../data/JD/kb_ner/bin
-MODEL=../models/jd_finetune/ner_new/checkpoint72.20.pt
-HEAD=transformer_tagging_head
+#DATA_DIR=data
+DATA_DIR=data_sample
+DATA_BIN_DIR=${DATA_DIR}/ave/bin
+MODEL=models/fairseq/kplug-finetune/ave/kplug_ft_ave.pt
+HEAD=ave_tagging_head
 
-python sequence_predict.py $DATA_DIR \
+python fairseq_cli_ext/sequence_tagging.py $DATA_BIN_DIR \
     --path $MODEL \
-    --user-dir ../src \
+    --user-dir src \
     --task sequence_tagging \
-    --max-source-positions 512 \
-    --max-target-positions 512 \
     --tagging-head-name $HEAD \
     --num-classes 53 \
     --source-lang src \
     --target-lang tag \
     --batch-size 64 \
-    2>&1 | tee output.txt
+    | tee output.txt
 
 grep ^S output.txt | cut -f2- > src.txt
 grep ^T output.txt | cut -f2- > tgt.txt
 grep ^H output.txt | cut -f2- > hypo.txt
 
-data_dir=/workspace/fairseq/examples/pretrain/ner_utils/
-mkdir $data_dir
-mv src.txt $data_dir
-mv tgt.txt $data_dir
-mv hypo.txt $data_dir
+python examples/kplug/ner_utils/ner_acc.py src.txt hypo.txt tgt.txt
+``` 
 
-cd ../examples/pretrain/ner_utils/
-python convert_bio_to_char.py
-python ner_acc.py
-```
-
-if you need additional crf layer before prediction, just set `HEAD=crf_tagging_head`
 
 
 ## Trouble Shooting

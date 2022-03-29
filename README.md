@@ -1,17 +1,41 @@
-## Introduction
+# K-PLUG
 
-K-PLUG: Knowledge-injected Pre-trained Language Model for Natural Language Understanding and Generation in E-Commerce.
+[K-PLUG: Knowledge-injected Pre-trained Language Model for Natural Language Understanding and Generation in E-Commerce](https://aclanthology.org/2021.findings-emnlp.1/)
+(Findings of EMNLP 2021),
+by Song Xu, Haoran Li, Peng Yuan, Yujia Wang, Youzheng Wu, Xiaodong He, Ying Liu, and Bowen Zhou, 
+is a knowledge-injected pre-trained language model based on the encoder-decoder framework that can be transferred to both natural language understanding and generation tasks.
 
-## Installation
 
-- PyTorch version >= 1.5.0
-- Python version >= 3.6    
 
+
+## Quick Start in Docker
+
+
+```sh
+docker run -it bitspeech/fairseq:latest bash
+git clone https://github.com/xu-song/k-plug.git
+cd k-plug
+sh finetune_cepsum_demo.sh  # 1. download model 2. finetune 3. inference 4. evaluation
 ```
-git clone https://github.com/pytorch/fairseq.git
-cd fairseq 
-pip install --editable ./
-```
+
+
+## Model Zoo
+
+We provide kplug pretrain and finetune models. 
+
+Encoder: 6L-768H-12A, Decoder: 6L-768H-12A, 110M parameters.
+
+
+| Task | Task Type | Task Description |  Model |
+|---|---|---|---|
+| pre-train | NLU & NLG | multi-task pre-train | [kplug.pt](http://storage.jd.com/language-models/kplug/pretrain/kplug.pt)  |
+| ft-MEPAVE | NLU | sequence tagging | [kplug_ft_ave.pt](http://storage.jd.com/language-models/kplug/ft-ave/kplug_ft_ave.pt) |
+| ft-ECD | NLU | retrieval based chatbot | [kplug_ft_ecd.pt](http://storage.jd.com/language-models/kplug/ft-ecd/kplug_ft_ecd.pt) |
+| ft-JDDC | NLG | generation based chatbot |  [kplug_ft_jddc.pt](http://storage.jd.com/language-models/kplug/ft-jddc/kplug_ft_jddc.pt) |
+
+
+
+
 
 ## Pre-training
 
@@ -63,13 +87,47 @@ fairseq-train $DATA_DIR \
     --fp16
 ```
 
+
 ## Fine-tuning and Inference
 
 [Finetuning on JDDC (Response Generation)](examples/kplug/README.finetune.jddc.md)
 
 [Finetuning on ECD Corpus (Response Retrieval)](examples/kplug/README.finetune.ecd.md)
 
-[Finetuning on JD Product Dataset (Abstractive Summarization)](examples/kplug/README.finetune.summarization.cate.md)
+[Finetuning on CEPSUM Dataset (Abstractive Summarization)](examples/kplug/README.finetune.summarization.cepsum.md)
 
 [Finetuning on MEPAVE Dataset (Sequence Tagging)](examples/kplug/README.finetune.seq_tagging.md)
 
+
+
+
+
+## Dependencies
+
+Currently we implement K-PLUG based on fairseq. The dependencies are as follows:
+
+- PyTorch version >= 1.5.0
+- Python version >= 3.6    
+- fairseq 
+```sh
+git clone https://github.com/pytorch/fairseq.git
+cd fairseq 
+pip install --editable ./
+# python setup.py build_ext --inplace
+```
+
+
+
+## Reference
+
+If you use this code please cite our paper:
+```
+@inproceedings{xu-etal-2021-k-plug,
+    title = "K-{PLUG}: Knowledge-injected Pre-trained Language Model for Natural Language Understanding and Generation in {E}-Commerce",
+    author = {Xu, Song and Li, Haoran and Yuan, Peng and Wang, Yujia and Wu, Youzheng and He, Xiaodong and Liu, Ying and Zhou, Bowen},
+    booktitle = "Findings of the Association for Computational Linguistics: EMNLP 2021",
+    year = "2021",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2021.findings-emnlp.1"
+}
+```

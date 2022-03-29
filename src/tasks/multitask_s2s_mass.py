@@ -67,10 +67,10 @@ class MaskedS2STask(FairseqTask):
         parser.add_argument('--tokens-per-sample', default=512, type=int,
                             help='max number of total tokens over all segments '
                                  'per sample for BERT dataset')
-        parser.add_argument('--max-source-positions', default=512, type=int, metavar='N',
-                            help='max number of tokens in the source sequence')
-        parser.add_argument('--max-target-positions', default=512, type=int, metavar='N',
-                            help='max number of tokens in the target sequence')
+        # parser.add_argument('--max-source-positions', default=512, type=int, metavar='N',
+        #                     help='max number of tokens in the source sequence')
+        # parser.add_argument('--max-target-positions', default=512, type=int, metavar='N',
+        #                     help='max number of tokens in the target sequence')
         parser.add_argument('--mask-prob', default=0.15, type=float,
                             help='probability of replacing a token with mask')
         parser.add_argument('--leave-unmasked-prob', default=0.1, type=float,

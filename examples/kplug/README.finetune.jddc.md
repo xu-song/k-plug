@@ -1,4 +1,22 @@
+Finetune in JDDC Corpus
+====
 
+## Introduction
+
+This is a task of response generation on JDDC dataset. sampled data
+
+train.src
+```
+[订单编号:[ORDERID_10477316]，订单金额:[金额x]，下单时间:[日期x] [时间x]] 有什么问题我可以帮您处理或解决呢? 您好 请问发票一般收到货物多久才能开出 订单完成后一个工作日才能开具哦 您好 好的 请问到时候卖家会直接联系我的吧
+```
+
+train.tgt
+```
+您开的是增值税发票，会给您邮寄过去的
+```
+
+
+## Finetune Pipeline
 
 ### 1) Data Preparation
 
@@ -35,16 +53,15 @@ Example fine-tuning JDDC
 ```bash
 export CUDA_VISIBLE_DEVICES=0,1,2,3
 DATA_DIR=data/jddc/bin
-RESTORE_MODEL=models/pretrain/checkpoint.pt
+RESTORE_MODEL=models/fairseq/kplug/kplug.pt
 
-nohup fairseq-train ${DATA_DIR} \
+fairseq-train ${DATA_DIR} \
     --user-dir src \
-    --task translation \
+    --task translation_bertdict \
     --arch transformer_kplug_base \
-    --bertdict \
     --reset-optimizer --reset-dataloader --reset-meters \
     --optimizer adam --adam-betas "(0.9, 0.98)" --clip-norm 0.0 \
-    --lr 0.0005 --min-lr 1e-09 \
+    --lr 0.0005 \
     --lr-scheduler inverse_sqrt --warmup-init-lr 1e-07 --warmup-updates 4000 \
     --weight-decay 0.0 \
     --criterion label_smoothed_cross_entropy --label-smoothing 0.1 \
@@ -54,6 +71,8 @@ nohup fairseq-train ${DATA_DIR} \
     --truncate-source \
     --restore-file ${RESTORE_MODEL} \
     --fp16
+    
+--min-lr 1e-09    
 ```
 
 
@@ -61,13 +80,13 @@ nohup fairseq-train ${DATA_DIR} \
 ### 3) Inference for JDDC test data using above trained checkpoint.
 ```
 export CUDA_VISIBLE_DEVICES=0
-DATA_DIR=data/JD/jddc/bin
-MODEL=models/finetune/jddc/checkpoint.pt
+DATA_DIR=data/jddc/bin
+MODEL=models/fairseq/kplug-finetune/jddc/kplug_ft_jddc.pt
 
 fairseq-generate $DATA_DIR \
     --path $MODEL \
     --user-dir src \
-    --task translation_with_bertdict \
+    --task translation_bertdict \
     --max-source-positions 512 \
     --max-target-positions 512 \
     --batch-size 64 \
@@ -78,6 +97,6 @@ fairseq-generate $DATA_DIR \
 
 grep ^T output.txt | cut -f2- | sed 's/ ##//g' > tgt.txt
 grep ^H output.txt | cut -f3- | sed 's/ ##//g' > hypo.txt
-cat hypo.txt | sacrebleu tgt.txt
-python get_rouge.py tgt.txt hypo.txt
+# cat hypo.txt | sacrebleu tgt.txt
+python tools/get_rouge.py tgt.txt hypo.txt
 ```
