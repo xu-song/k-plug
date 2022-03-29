@@ -10,13 +10,21 @@ is a knowledge-injected pre-trained language model based on the encoder-decoder 
 
 ## Quick Start in Docker
 
+
+GPU
 ```sh
 git clone https://github.com/xu-song/k-plug.git
 cd k-plug
-
-nvidia-docker run -it --shm-size 15G -v $(pwd):/workspace/ bitspeech/fairseq:latest bash  # GPU
-# docker run -it -v $(pwd):/workspace/ bitspeech/fairseq:latest bash  # CPU
+nvidia-docker run -it --shm-size 15G --network=host -v $(pwd):/workspace/ bitspeech/fairseq:latest bash
 sh finetune_cepsum_demo.sh  # 1. download model 2. finetune 3. inference 4. evaluation
+```
+
+CPU
+```sh
+git clone https://github.com/xu-song/k-plug.git
+cd k-plug
+docker run -it --network=host -v $(pwd):/workspace/ bitspeech/fairseq:latest bash
+sh finetune_cepsum_demo.sh
 ```
 
 ## Model Zoo
