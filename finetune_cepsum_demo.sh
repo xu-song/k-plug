@@ -64,7 +64,7 @@ fairseq-train ${DATA_BIN_DIR} \
     --ddp-backend=no_c10d --max-epoch ${MAX_EPOCH} \
     --max-source-positions 512 --max-target-positions 512 \
     --truncate-source \
-    --restore-file ${RESTORE_MODEL} \
+    --restore-file ${RESTORE_MODEL}
 
 ## 4. Inference
 echo "Runing Inference"
@@ -82,7 +82,9 @@ fairseq-generate $DATA_BIN_DIR \
 
 
 # 5. Evaluation
-
+grep ^T ${CATEGORY}.output.txt | cut -f2- | sed 's/ ##//g' > tgt.txt
+grep ^H ${CATEGORY}.output.txt | cut -f3- | sed 's/ ##//g' > hypo.txt
+python tools/get_rouge.py tgt.txt hypo.txt
 
 
 
