@@ -1,5 +1,6 @@
 
-CATEGORY=jiadian
+CATEGORY=${1-jiadian}
+DATA_DIR=data_sample
 MODEL_DIR=models/fairseq/kplug
 MODEL=${MODEL_DIR}/kplug.pt
 
@@ -11,8 +12,9 @@ if [ ! -f "$MODEL" ]; then
   cd -
 fi
 
+
+
 ## 2. Data Preparation
-DATA_DIR=data_sample
 mkdir ${DATA_DIR}/sum/cepsum/${CATEGORY}/bpe
 echo "Applying BPE"
 # Tokenize
@@ -42,9 +44,6 @@ fairseq-preprocess \
 
 ## 3. Finetune
 echo "Runing Finetune"
-CATEGORY=jiadian
-#DATA_DIR=data
-DATA_DIR=data_sample
 DATA_BIN_DIR=${DATA_DIR}/sum/cepsum/${CATEGORY}/bin
 RESTORE_MODEL=models/fairseq/kplug/kplug.pt
 MAX_EPOCH=2
