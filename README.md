@@ -15,6 +15,7 @@ GPU
 ```sh
 git clone https://github.com/xu-song/k-plug.git
 cd k-plug
+
 nvidia-docker run -it --shm-size 15G --network=host -v $(pwd):/workspace/ bitspeech/fairseq:latest bash
 sh finetune_cepsum_demo.sh  # 1. download model 2. finetune 3. inference 4. evaluation
 ```
@@ -23,6 +24,7 @@ CPU
 ```sh
 git clone https://github.com/xu-song/k-plug.git
 cd k-plug
+
 docker run -it --network=host -v $(pwd):/workspace/ bitspeech/fairseq:latest bash
 sh finetune_cepsum_demo.sh
 ```
