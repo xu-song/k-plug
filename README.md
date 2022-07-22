@@ -44,9 +44,7 @@ Encoder: 6L-768H-12A, Decoder: 6L-768H-12A, 110M parameters.
 | ft-MEPAVE | NLU | sequence tagging | [kplug_ft_ave.pt](http://storage.jd.com/language-models/kplug/ft-ave/kplug_ft_ave.pt) |
 | ft-ECD | NLU | retrieval based chatbot | [kplug_ft_ecd.pt](http://storage.jd.com/language-models/kplug/ft-ecd/kplug_ft_ecd.pt) |
 | ft-JDDC | NLG | generation based chatbot |  [kplug_ft_jddc.pt](http://storage.jd.com/language-models/kplug/ft-jddc/kplug_ft_jddc.pt) |
-| ft-CEPSUM-jiadian | NLG | generation based summarization | [kplug_ft_cepsum_jiadian.pt](https://storage.jd.com/language-models/kplug/ft-cepsum/kplug_ft_cepsum_jiadian.pt) |
-| ft-CEPSUM-fushi | NLG | generation based summarization | [kplug_ft_cepsum_fushi.pt](https://storage.jd.com/language-models/kplug/ft-cepsum/kplug_ft_cepsum_fushi.pt) |
-| ft-CEPSUM-xiangbao | NLG | generation based summarization | [kplug_ft_cepsum_xiangbao.pt](https://storage.jd.com/language-models/kplug/ft-cepsum/kplug_ft_cepsum_xiangbao.pt) |
+
 
 
 
