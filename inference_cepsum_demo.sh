@@ -7,7 +7,7 @@ MODEL_DIR=models/fairseq/kplug-finetune/cepsum/
 if [ ! -f "$MODEL" ]; then
   mkdir -p $MODEL_DIR
   cd $MODEL_DIR
-  wget https://storage.jd.com/language-models/kplug/ft-cepsum/kplug_ft_cepsum_jiadian.pt
+  echo "download model"
   cd -
 fi
 
