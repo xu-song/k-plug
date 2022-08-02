@@ -33,9 +33,9 @@ sh finetune_cepsum_demo.sh
 
 ## Quick Start in HuggingFace
 
-We also provide pretrained model with huggingface version [kplug-hf](http://storage.jd.local/language-models/kplug/kplug_hf.zip).
+We also provide pretrained model with huggingface version.
 
-See more detail: https://github.com/xu-song/k-plug/tree/master/examples/kplug_hf
+For more details, please refer to [huggingface demo](examples/kplug_hf)
 
 
 ## Model Zoo
