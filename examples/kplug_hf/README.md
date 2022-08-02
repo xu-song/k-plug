@@ -1,6 +1,6 @@
 
 
-1. 下载模型
+1. Download pretrained model
 ```
 cd models/hugging_face/kplug
 wget http://storage.jd.local/language-models/kplug/kplug_hf.zip
