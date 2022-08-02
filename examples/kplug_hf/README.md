@@ -3,7 +3,7 @@
 1. Download pretrained model
 ```
 cd models/hugging_face/kplug
-wget http://storage.jd.local/language-models/kplug/kplug_hf.zip
+wget https://storage.jd.com/language-models/kplug/kplug_hf.zip
 unzip kplug_hf.zip
 ```
 
