@@ -10,7 +10,7 @@ is a knowledge-injected pre-trained language model based on the encoder-decoder 
 - **March 2022** Released [M-KPLUG](https://github.com/WaveLi123/m-kplug) which injects the visual signals to the decoder layer.
 - **April 2022** Released [demo](finetune_cepsum_demo.sh) for Shared Tasks in NLPCC 2022 [Multimodal Summarization Challenge](https://jd-nlg-rhino.github.io/)
 
-## Quick Start in Docker (fairseq)
+## Quick Start with Docker (fairseq)
 
 
 GPU
@@ -31,9 +31,9 @@ docker run -it --network=host -v $(pwd):/workspace/ bitspeech/fairseq:latest bas
 sh finetune_cepsum_demo.sh
 ```
 
-## Quick Start in HuggingFace
+## Quick Start with HuggingFace
 
-We also provide pretrained model with huggingface version.
+We also provide pretrained model in huggingface version.
 
 For more details, please refer to [huggingface demo](examples/kplug_hf)
 
