@@ -8,7 +8,8 @@ is a knowledge-injected pre-trained language model based on the encoder-decoder 
 
 ## What's New:
 - **March 2022** Released [M-KPLUG](https://github.com/WaveLi123/m-kplug) which injects the visual signals to the decoder layer.
-- **April 2022** Released [demo](finetune_cepsum_demo.sh) for Shared Tasks in NLPCC 2022 [Multimodal Summarization Challenge](https://jd-nlg-rhino.github.io/)
+- **April 2022** Released [pipeline](finetune_cepsum_demo.sh) for Shared Tasks in NLPCC 2022 [Multimodal Summarization Challenge](https://jd-nlg-rhino.github.io/).
+- **September 2022** Released [online demo](https://huggingface.co/spaces/eson/kplug) at Huggingface.
 
 ## Quick Start with Docker (fairseq)
 
@@ -33,9 +34,11 @@ sh finetune_cepsum_demo.sh
 
 ## Quick Start with HuggingFace
 
-We also provide pretrained model in huggingface version.
+We also provide [huggingface api](examples/kplug_hf).
 
-For more details, please refer to [huggingface demo](examples/kplug_hf)
+For more details, please refer to [huggingface demo](https://huggingface.co/spaces/eson/kplug)
+
+
 
 
 ## Model Zoo
