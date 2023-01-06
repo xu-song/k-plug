@@ -1,9 +1,11 @@
 # K-PLUG
 
-[K-PLUG: Knowledge-injected Pre-trained Language Model for Natural Language Understanding and Generation in E-Commerce](https://aclanthology.org/2021.findings-emnlp.1/)
+Implementation of paper [K-PLUG: Knowledge-injected Pre-trained Language Model for Natural Language Understanding and Generation in E-Commerce](https://aclanthology.org/2021.findings-emnlp.1/)
 (Findings of EMNLP 2021),
-by Song Xu, Haoran Li, Peng Yuan, Yujia Wang, Youzheng Wu, Xiaodong He, Ying Liu, and Bowen Zhou, 
-is a knowledge-injected pre-trained language model based on the encoder-decoder framework that can be transferred to both natural language understanding and generation tasks.
+by Song Xu, Haoran Li, Peng Yuan, Yujia Wang, Youzheng Wu, Xiaodong He, Ying Liu, and Bowen Zhou. 
+K-PLUG is a knowledge-injected pre-trained language model based on encoder-decoder framework that can be transferred to both natural language understanding and generation tasks.
+
+<!-- TODO: 参考 https://github.com/WongKinYiu/yolov7/blob/main/README.md -->
 
 
 ## Web Demo
