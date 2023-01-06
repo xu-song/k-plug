@@ -3,13 +3,21 @@
 [K-PLUG: Knowledge-injected Pre-trained Language Model for Natural Language Understanding and Generation in E-Commerce](https://aclanthology.org/2021.findings-emnlp.1/)
 (Findings of EMNLP 2021),
 by Song Xu, Haoran Li, Peng Yuan, Yujia Wang, Youzheng Wu, Xiaodong He, Ying Liu, and Bowen Zhou, 
-is a knowledge-injected pre-trained language model based on the encoder-decoder framework that can be transferred to both natural language understanding and generation tasks.
+is a knowledge-injected pre-trained language model based on the encoder-decoder framework that can be transferred to both natural language understanding and generation tasks. [demo](https://huggingface.co/spaces/eson/kplug)
+
+
+## Web Demo
+
+- Integrated into [Huggingface Spaces 🤗](https://huggingface.co/spaces/eson/kplug) using Gradio. Try out the Web Demo [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/eson/kplug)
+
 
 
 ## What's New:
-- **March 2022** Released [M-KPLUG](https://github.com/WaveLi123/m-kplug) which injects the visual signals to the decoder layer.
-- **April 2022** Released [pipeline](finetune_cepsum_demo.sh) for Shared Tasks in NLPCC 2022 [Multimodal Summarization Challenge](https://jd-nlg-rhino.github.io/).
-- **September 2022** Released [online demo](https://huggingface.co/spaces/eson/kplug) at Huggingface.
+- **2022/09** Released [demo](https://huggingface.co/spaces/eson/kplug) at Huggingface Spaces.
+- **2022/04** Released [pipeline](finetune_cepsum_demo.sh) for Shared Tasks in NLPCC 2022 [Multimodal Summarization Challenge](https://jd-nlg-rhino.github.io/).
+- **2022/03** Released [M-KPLUG](https://github.com/WaveLi123/m-kplug) which injects the visual signals to the decoder layer.
+
+
 
 ## Quick Start with Docker (fairseq)
 
@@ -35,9 +43,6 @@ sh finetune_cepsum_demo.sh
 ## Quick Start with HuggingFace
 
 We also provide [huggingface api](examples/kplug_hf).
-
-For more details, please refer to [huggingface demo](https://huggingface.co/spaces/eson/kplug)
-
 
 
 
